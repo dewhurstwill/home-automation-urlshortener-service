@@ -2,7 +2,7 @@
 const express = require('express');
 const monk = require('monk');
 const { nanoid } = require('nanoid');
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const rateLimit = require('express-rate-limit');
 
 // MongoDB Connection
@@ -30,7 +30,7 @@ const createApiLimiter = rateLimit({
 });
 
 // Create short url
-router.post('/create', createApiLimiter, async (req, res, next) => {
+router.post('/api/v1/url/shorten', createApiLimiter, async (req, res, next) => {
   try {
     // Validate Request Body
     const validated = await createSchema.validateAsync(req.body);
@@ -40,7 +40,7 @@ router.post('/create', createApiLimiter, async (req, res, next) => {
     slug = slug ? slug.toLowerCase() : '';
     // If not slug
     if (!slug) {
-      slug = nanoid(5); // Generate an ID to use as a slug
+      slug = nanoid(10); // Generate an ID to use as a slug
     } else {
       // Check if the user provided slug exists in the database
       const slugExists = await urls.findOne({ slug });
@@ -58,14 +58,14 @@ router.post('/create', createApiLimiter, async (req, res, next) => {
     });
     // If record creation successful, return http200
     if (created) {
-      res.json({
+      return res.json({
         message: 'Success',
         ...created
       });
     }
   } catch (error) {
     // Handle error
-    next(error);
+    return next(error);
   }
 });
 
@@ -78,34 +78,12 @@ router.get('/:id', async (req, res) => {
     // Find the slug in the database
     const url = await urls.findOne({ slug });
     // If record exists, redirect to the saved url
-    if (url) res.status(301).redirect(url.url);
+    if (url) return res.status(301).redirect(url.url);
     // If record not found, redirect to the error page
-    res.status(301).redirect(`/?error=${slug} not found`);
+    return res.status(301).redirect(`/?error=${slug} not found`);
   } catch (error) {
     // Handle error
     return res.status(301).redirect('/?error=Link not found');
-  }
-});
-
-// Describe short url
-router.get('/describe/:id', async (req, res) => {
-  // Deconstruct the ID from the url params,
-  // save it as a variable called slug
-  const { id: slug } = req.params;
-  try {
-    // Find the slug in the database
-    const url = await urls.findOne({ slug });
-    // If record exists, return details to the user
-    if (url) {
-      res.json({
-        slug,
-        url: url.url,
-        isSafe: 'TODO: api response from virus total api'
-      });
-    }
-  } catch (error) {
-    // Handle error
-    return res.redirect('/?error=Link not found');
   }
 });
 

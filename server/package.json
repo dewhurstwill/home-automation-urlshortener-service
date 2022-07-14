@@ -1,7 +1,7 @@
 {
-  "name": "example-mongo-express-url-shortener",
+  "name": "home-automation-urlshortener-service",
   "version": "1.0.0",
-  "description": "An example CRUD API built using MongoDB & ExpressJS",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -9,18 +9,18 @@
     "lint": "eslint --fix src"
   },
   "keywords": [],
-  "author": "Will Dewhurst (https://github.com/dewhurstwill), Inspired by CJ R. <cj@null.computer> (https://w3cj.now.sh)",
+  "author": "Will Dewhust. <will@wdew.uk> (https://hello.wdew.uk)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dewhurstwill/example-mongo-express-url-shortener.git"
+    "url": "https://github.com/dewhurstwill/home-automation-urlshortener-service.git"
   },
   "license": "MIT",
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-rate-limit": "^5.1.3",
     "helmet": "^4.1.0",
+    "joi": "^17.6.0",
     "monk": "^7.3.2",
     "morgan": "^1.10.0",
     "nanoid": "^3.1.12"
